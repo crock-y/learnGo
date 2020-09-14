@@ -16,6 +16,5 @@ func AddTag(c *gin.Context) {
 func EditTag(c *gin.Context) {
 }
 
-//删除文章标签
 func DeleteTag(c *gin.Context) {
 }
