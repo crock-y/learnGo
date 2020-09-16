@@ -3,6 +3,7 @@ module github.com/EDDYCJY/go-gin-example
 go 1.15
 
 require (
+	github.com/astaxie/beego v1.12.2 // indirect
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-ini/ini v1.61.0
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
@@ -11,6 +12,7 @@ require (
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/unknwon/com v1.0.1 // indirect
 	golang.org/x/sys v0.0.0-20200908134130-d2e65c121b96 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
