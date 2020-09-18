@@ -1,9 +1,12 @@
 package v1
 
 import (
+    "log"
     "github.com/gin-gonic/gin"
     "github.com/unknwon/com"
     "net/http"
+
+    "github.com/astaxie/beego/validation"
 
     "github.com/EDDYCJY/go-gin-example/pkg/e"
     "github.com/EDDYCJY/go-gin-example/pkg/util"
@@ -47,23 +50,37 @@ func AddTag(c *gin.Context) {
     createdBy := c.Query("createdBy")
     var state int = -1
 
-
     state = com.StrTo(c.Query("state")).MustInt()
 
+    valid := validation.Validation{}
+    valid.Required(name, "name").Message("名称不能为空")
+    valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
+    valid.Required(createdBy, "created_by").Message("创建人不能为空")
+    valid.MaxSize(createdBy, 100, "created_by").Message("创建人最长为100字符")
+    valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
 
-    if models.ExistTagByName(name) == true {
-        return
+
+    code := e.INVALID_PARAMS
+    if ! valid.HasErrors() {
+        if ! models.ExistTagByName(name) {
+            code = e.SUCCESS
+            models.AddTag(name, state, createdBy)
+        } else {
+            code = e.ERROR_EXIST_TAG
+        }
+    } else {
+      // 如果有错误信息，证明验证没通过
+      // 打印错误信息
+      for _, err := range valid.Errors {
+          log.Println(err.Key, err.Message)
+      }
     }
-    if models.AddTag(name, state, createdBy) {
-      code:=e.SUCCESS
-      c.JSON(http.StatusOK, gin.H{
-          "code" : code,
-          "msg" : e.GetMsg(code),
-      })
-    }
 
-
-
+    c.JSON(http.StatusOK, gin.H{
+        "code" : code,
+        "msg" : e.GetMsg(code),
+        "data" : make(map[string]string),
+    })
 }
 
 //修改文章标签
