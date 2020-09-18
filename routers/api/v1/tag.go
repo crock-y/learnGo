@@ -43,6 +43,27 @@ func GetTags(c *gin.Context) {
 
 //新增文章标签
 func AddTag(c *gin.Context) {
+    name := c.Query("name")
+    createdBy := c.Query("createdBy")
+    var state int = -1
+
+
+    state = com.StrTo(c.Query("state")).MustInt()
+
+
+    if models.ExistTagByName(name) == true {
+        return
+    }
+    if models.AddTag(name, state, createdBy) {
+      code:=e.SUCCESS
+      c.JSON(http.StatusOK, gin.H{
+          "code" : code,
+          "msg" : e.GetMsg(code),
+      })
+    }
+
+
+
 }
 
 //修改文章标签
