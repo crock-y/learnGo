@@ -21,7 +21,7 @@ require (
 
 replace (
 	github.com/EDDYCJY/go-gin-example/conf => /home/rock/go-application/go-gin-example/pkg/conf
-	github.com/EDDYCJY/go-gin-example/middleware => /home/rock/go-application/go-gin-example/middleware
+	//github.com/EDDYCJY/go-gin-example/middleware => /home/rock/go-application/go-gin-example/middleware
 	github.com/EDDYCJY/go-gin-example/models => /home/rock/go-application/go-gin-example/models
 	github.com/EDDYCJY/go-gin-example/pkg/setting => /home/rock/go-application/go-gin-example/pkg/setting
 	github.com/EDDYCJY/go-gin-example/routers => /home/rock/go-application/go-gin-example/routers
