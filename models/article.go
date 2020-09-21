@@ -8,48 +8,36 @@ import (
 type Article struct {
 	Model
 
-	TagId int `json:"tag_id"`
-	Title string `json:"title"`
-	desc string `json:"desc"`
-	content string `json:"content"`
-	createdBy string `json:"created_by"`
-	modifiedBy string `json:"modified_by"`
-	content string `json:"content"`
-	state int `json:"state"`
+	TagId      int    `json:"tag_id"`
+	Title      string `json:"title"`
+	Desc       string `json:"desc"`
+	Content    string `json:"content"`
+	CreatedBy  string `json:"created_by"`
+	ModifiedBy string `json:"modified_by"`
+	State      int    `json:"state"`
 }
 
-func GetArticles(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
+func GetArticles(pageNum int, pageSize int, maps interface{}) (article []Article) {
+	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&article)
 
 	return
 }
 
-func GetArticles(pageNum int, pageSize int, maps interface{}) (tags []Tag) {
-	db.Where(maps).Offset(pageNum).Limit(pageSize).Find(&tags)
-
+func GetArticle(id int) (article Article) {
+	db.Where("id = ?", id).First(&article)
 	return
 }
 
-func GetTagTotal(maps interface{}) (count int) {
+func GetArticleTotal(maps interface{}) (count int) {
 	db.Model(&Tag{}).Where(maps).Count(&count)
 
 	return
 }
 
-func ExistTagByName(name string) bool {
-	var tag Tag
-	db.Select("id").Where("name = ?", name).First(&tag)
-	if tag.ID > 0 {
-		return true
-	}
-
-	return false
-}
-
-func ExistTagById(id int) bool {
-	var tag Tag
-	db.Select("id").Where("id = ?", id).First(&tag)
-	if tag.ID > 0 {
+func ExistArticleById(id int) bool {
+	var article Article
+	db.Select("id").Where("id = ?", id).First(&article)
+	if article.ID > 0 {
 		return true
 	}
 
@@ -57,9 +45,12 @@ func ExistTagById(id int) bool {
 }
 
 //新增文章标签
-func AddTag(name string, state int, createdBy string) bool {
-	db.Create(&Tag{
-		Name:      name,
+func AddArticle(title string, tagId int, desc string, content string, state int, createdBy string) bool {
+	db.Create(&Article{
+		TagId:     tagId,
+		Title:     title,
+		Desc:      desc,
+		Content:   content,
 		State:     state,
 		CreatedBy: createdBy,
 	})
@@ -68,25 +59,25 @@ func AddTag(name string, state int, createdBy string) bool {
 }
 
 //修改
-func EditTag(id int, data interface{}) bool {
-	db.Model(&Tag{}).Where("id = ?", id).Updates(data)
+func EditArticle(id int, data interface{}) bool {
+	db.Model(&Article{}).Where("id = ?", id).Updates(data)
 
 	return true
 }
 
-func (tag *Tag) BeforeCreate(scope *gorm.Scope) error {
+func (article *Article) BeforeCreate(scope *gorm.Scope) error {
 	scope.SetColumn("CreatedOn", time.Now().Unix())
 
 	return nil
 }
 
-func (tag *Tag) BeforeUpdate(scope *gorm.Scope) error {
+func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
 	scope.SetColumn("ModifiedOn", time.Now().Unix())
 
 	return nil
 }
 
-func DeleteTag(id int) bool {
+func DeleteArticle(id int) bool {
 	db.Where("id = ?", id).Delete(&Tag{})
 
 	return true
