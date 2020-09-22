@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"github.com/EDDYCJY/go-gin-example/pkg/setting"
+	"github.com/EDDYCJY/go-gin-example/pkg/util"
 	"github.com/gin-gonic/gin"
 	"github.com/unknwon/com"
 
@@ -21,12 +23,11 @@ func GetArticle(c *gin.Context) {
 	var data interface{}
 	code := e.INVALID_PARAMS
 	if !valid.HasErrors() {
-		code = e.SUCCESS
-		//
-		data = models.GetArticle(id)
-		//data["total"] = models.GetArticleTotal()
+		code = e.ERROR_NOT_EXIST_ARTICLE
+		if models.ExistArticleById(id) {
+			data = models.GetArticle(id)
+		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  e.GetMsg(code),
@@ -37,10 +38,26 @@ func GetArticle(c *gin.Context) {
 
 //获取多个文章
 func GetArticles(c *gin.Context) {
+
+	maps := make(map[string]interface{})
+	if title := c.Query("title"); title != "" {
+		maps["title"] = title
+	}
+
+	code := e.SUCCESS
+	data := models.GetArticles(util.GetPage(c), setting.PageSize, maps)
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": data,
+	})
 }
 
 //新增文章
 func Create(c *gin.Context) {
+
+	//models.AddArticle("")
 }
 
 //修改文章
