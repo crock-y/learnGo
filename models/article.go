@@ -8,13 +8,27 @@ import (
 type Article struct {
 	Model
 
-	TagId      int    `json:"tag_id"`
+	TagId int `json:"tag_id" gorm:"index"`
+	Tag   Tag `json:"tag"`
+
 	Title      string `json:"title"`
 	Desc       string `json:"desc"`
 	Content    string `json:"content"`
 	CreatedBy  string `json:"created_by"`
 	ModifiedBy string `json:"modified_by"`
 	State      int    `json:"state"`
+}
+
+func (article *Article) BeforeCreate(scope *gorm.Scope) error {
+	scope.SetColumn("CreatedOn", time.Now().Unix())
+
+	return nil
+}
+
+func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
+	scope.SetColumn("ModifiedOn", time.Now().Unix())
+
+	return nil
 }
 
 func GetArticles(pageNum int, pageSize int, maps interface{}) (article []Article) {
@@ -45,16 +59,15 @@ func ExistArticleById(id int) bool {
 }
 
 //新增文章标签
-func AddArticle(title string, tagId int, desc string, content string, state int, createdBy string) bool {
+func AddArticle(data map[string]interface{}) bool {
 	db.Create(&Article{
-		TagId:     tagId,
-		Title:     title,
-		Desc:      desc,
-		Content:   content,
-		State:     state,
-		CreatedBy: createdBy,
+		TagId:     data["tag_id"].(int),
+		Title:     data["title"].(string),
+		Desc:      data["desc"].(string),
+		Content:   data["content"].(string),
+		CreatedBy: data["created_by"].(string),
+		State:     data["state"].(int),
 	})
-
 	return true
 }
 
@@ -65,20 +78,9 @@ func EditArticle(id int, data interface{}) bool {
 	return true
 }
 
-func (article *Article) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("CreatedOn", time.Now().Unix())
-
-	return nil
-}
-
-func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("ModifiedOn", time.Now().Unix())
-
-	return nil
-}
-
 func DeleteArticle(id int) bool {
 	db.Where("id = ?", id).Delete(&Tag{})
 
+	return true
 	return true
 }

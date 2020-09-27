@@ -57,7 +57,6 @@ func GetArticles(c *gin.Context) {
 //新增文章
 func Create(c *gin.Context) {
 
-	//models.AddArticle("")
 }
 
 //修改文章
@@ -66,4 +65,5 @@ func Edit(c *gin.Context) {
 
 //删除文章
 func Delete(c *gin.Context) {
+
 }
